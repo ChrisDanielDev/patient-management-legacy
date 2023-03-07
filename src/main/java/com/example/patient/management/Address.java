@@ -56,18 +56,11 @@ public class Address {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(this._streetName);
-        if (this._cityName != null && !this._cityName.isEmpty()) {
-            sb.append(", ");
-            sb.append(this._cityName);
-        }
 
-        if (this._stateName != null && !this._stateName.isEmpty()) {
-            sb.append(", ");
-            sb.append(this._stateName);
-        }
-        sb.append(", ");
-        sb.append(this._countryName);
+        Optional.ofNullable(this._cityName).ifPresent(city -> sb.append(", ").append(city));
+        Optional.ofNullable(this._stateName).ifPresent(state -> sb.append(", ").append(state));
 
+        sb.append(", ").append(this._countryName);
         return sb.toString();
     }
 }
