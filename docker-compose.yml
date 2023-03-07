@@ -1,0 +1,7 @@
+version: "1.0"
+services:
+  web:
+    build: .
+    image: patient_management
+    ports:
+      - "8080:8080"
