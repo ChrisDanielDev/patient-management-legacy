@@ -1,5 +1,6 @@
 package com.example.patient.management;
 import java.util.Optional;
+import java.util.Objects;
 
 public class Address {
     private static final String ERROR_STREET_NAME_REQUIRED = "Street name is required";
@@ -62,5 +63,20 @@ public class Address {
 
         sb.append(", ").append(this._countryName);
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Address other = (Address) obj;
+        return Objects.equals(_countryName, other._countryName)
+            && Objects.equals(_cityName, other._cityName)
+            && Objects.equals(_streetName, other._streetName)
+            && Objects.equals(_stateName, other._stateName);
     }
 }

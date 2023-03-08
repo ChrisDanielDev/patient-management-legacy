@@ -1,6 +1,5 @@
 package com.example.patient.management;
 import java.util.Objects;
-import java.util.Optional;
 
 public class PatientFullName {
     private static final String ERROR_FIRST_NAME_REQUIRED = "First name is required";
