@@ -33,11 +33,9 @@ class PatientTests {
 
         // assert
         assertThat(pacientResult.isSuccess()).isFalse();
-        assertThat(pacientResult.getMessage()).isEqualTo("Country name is required");
+        assertThat(pacientResult.getMessage()).isEqualTo("Patient registration has faield, because address or full name is invalid.");
     }
 
-
-    
     @Test
     void givenInvalidFirstName_whenCreatingPatient_thenPatientIsNotRegistered() {
         // act & arrange
@@ -45,6 +43,21 @@ class PatientTests {
 
         // assert
         assertThat(pacientResult.isSuccess()).isFalse();
-        assertThat(pacientResult.getMessage()).isEqualTo("First name is required");
+        assertThat(pacientResult.getMessage()).isEqualTo("Patient registration has faield, because address or full name is invalid.");
+    }
+
+    @Test
+    void givenValidFirstNameAddress_whenValidatingPatientInformation_thenPatientIsValid() {
+        assertThat(Patient.IsValid("Avram Iancu", "Romania", null, null, "Jhon", "Doe")).isTrue();
+    }
+
+    @Test
+    void givenInvalidFirstName_whenValidatingPatientInformation_thenPatientIsNotValid() {
+        assertThat(Patient.IsValid("Avram Iancu", "Romania", null, null, "", "Doe")).isFalse();
+    }
+
+    @Test
+    void givenInvalidAddress_whenValidatingPatientInformation_thenPatientIsNotValid() {
+        assertThat(Patient.IsValid("Avram Iancu", "", null, null, "Chris", "Doe")).isFalse();
     }
 }
