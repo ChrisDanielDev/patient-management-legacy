@@ -25,7 +25,11 @@ class PatientTests {
         // assert
         assertThat(pacientResult.isSuccess()).isTrue();
         
-        assertThat(pacientResult.getValue()).isNotNull();
+        Patient patient = pacientResult.getValue();
+        assertThat(patient.getAddress()).isEqualTo(addressResult.getValue());
+        assertThat(patient.getFullName()).isEqualTo(fullNameResult.getValue());
+        assertThat(patient.getContactInformation()).isEqualTo(contactInformation.getValue());
+    
     }
 
     @Test

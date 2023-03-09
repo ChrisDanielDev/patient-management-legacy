@@ -1,5 +1,6 @@
 package com.example.patient.management;
 import java.util.Optional;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class ContactInformation {
@@ -85,4 +86,23 @@ public class ContactInformation {
         }
         return sb.toString();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof ContactInformation)) {
+            return false;
+        }
+        ContactInformation other = (ContactInformation) obj;
+        return Objects.equals(email, other.email) &&
+                Objects.equals(phoneNumber, other.phoneNumber);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(email, phoneNumber);
+    }
+
 }
