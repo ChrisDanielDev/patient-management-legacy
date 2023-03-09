@@ -7,6 +7,7 @@ public class Patient {
     private final UUID ID;
     private PatientFullName _fullName;
     private Address _address;
+    private ContactInformation _contactInformation;
 
     public PatientFullName getFullName() {
         return _fullName;
@@ -16,10 +17,19 @@ public class Patient {
         return _address;
     }
 
-    private Patient(UUID ID, PatientFullName patientFullName, Address address) {
+    public ContactInformation getContactInformation() {
+        return _contactInformation;
+    }
+
+    public UUID getID() {
+        return ID;
+    }
+
+    private Patient(UUID ID, PatientFullName patientFullName, Address address, ContactInformation contactInformation) {
         this.ID = ID;
         this._fullName = patientFullName;
         this._address = address;
+        this._contactInformation = contactInformation;
     }
 
     public Result<Patient> updateFullName(String FirstName, String LastName) {
@@ -33,24 +43,19 @@ public class Patient {
         return null;
     }
 
-    public static boolean IsValid(String streetName, String CountryName, String StateName, String City, String FirstName, String LastName) {
-        Result<Address> addressResult  = Address.create(streetName, CountryName, StateName, City);
-        Result<PatientFullName> fullNameResult  = PatientFullName.create(FirstName, LastName);
-
-        return addressResult.isSuccess() && fullNameResult.isSuccess();
-    }
-
-    public static Result<Patient> registerPatient(String streetName, String CountryName, String StateName, String City, String FirstName, String LastName) {
-        if(!Patient.IsValid(streetName, CountryName, StateName, City, FirstName, LastName)){
-            return Result.failure("Patient registration has faield, because address or full name is invalid.");
+    public static Result<Patient> registerPatient(PatientFullName fullName, Address address, ContactInformation contactInformation) {
+        if (fullName == null) {
+            return Result.failure("Full name is required");
         }
-        
-        Result<Address> addressResult  = Address.create(streetName, CountryName, StateName, City);
-        Result<PatientFullName> fullNameResult  = PatientFullName.create(FirstName, LastName);
+
+        if (contactInformation == null) {
+            return Result.failure("Contact info is required");
+        }
 
         UUID ID = UUID.randomUUID();
 
-        return Result.success(new Patient(ID, fullNameResult.getValue(), addressResult.getValue()));
+
+        return Result.success(new Patient(ID, fullName, address, contactInformation));
     }
 
     @Override

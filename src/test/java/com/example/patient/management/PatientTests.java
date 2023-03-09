@@ -13,51 +13,62 @@ class PatientTests {
 	}
 
     @Test
-    void givenValidAddressAndFullName_whenCreatingPatient_thenPatientIsRegistered() {
+    void givenValidAddressAndFullNameAndContactInformation_whenRegisteringPatient_thenPatientIsRegistered() {
         // arrange
         Result<Address> addressResult = Address.create("Avram Iancu", "Romania", null, null);
         Result<PatientFullName> fullNameResult = PatientFullName.create("John", "Doe");
+        Result<ContactInformation> contactInformation = ContactInformation.create("chris@email.com", "+1 123 456 7890");
 
         // act
-        Result<Patient> pacientResult = Patient.registerPatient("Avram Iancu", "Romania", null, null, "John", "Doe");
-
+        Result<Patient> pacientResult = Patient.registerPatient(fullNameResult.getValue(), addressResult.getValue(), contactInformation.getValue());
+        
         // assert
-        assertThat(pacientResult.getValue().getFullName()).isEqualTo(fullNameResult.getValue());
-        assertThat(pacientResult.getValue().getAddress()).isEqualTo(addressResult.getValue());
+        assertThat(pacientResult.isSuccess()).isTrue();
+        
+        assertThat(pacientResult.getValue()).isNotNull();
     }
-    
-    @Test
-    void givenInvalidAddress_whenCreatingPatient_thenPatientIsNotRegistered() {
-        // act & arrange
-        Result<Patient> pacientResult = Patient.registerPatient("Avram Iancu", "", null, null, "John", "Doe");
 
+    @Test
+    void givenOnlyFullNameAndContactInformation_whenRegisteringPatient_thenPatientIsRegistered() {
+        // arrange
+        Result<PatientFullName> fullNameResult = PatientFullName.create("John", "Doe");
+        Result<ContactInformation> contactInformation = ContactInformation.create("chris@email.com", "+1 123 456 7890");
+
+        // act
+        Result<Patient> pacientResult = Patient.registerPatient(fullNameResult.getValue(), null, contactInformation.getValue());
+        
+        // assert
+        assertThat(pacientResult.isSuccess()).isTrue();
+        
+        assertThat(pacientResult.getValue()).isNotNull();
+    }
+
+    @Test
+    void givenOnlyAddress_whenRegisteringPatient_thenPatientIsNotRegistered() {
+        // arrange
+        Result<Address> addressResult = Address.create("Avram Iancu", "Romania", null, null);
+
+        // act
+        Result<Patient> pacientResult = Patient.registerPatient(null, addressResult.getValue(), null);
+        
         // assert
         assertThat(pacientResult.isSuccess()).isFalse();
-        assertThat(pacientResult.getMessage()).isEqualTo("Patient registration has faield, because address or full name is invalid.");
+        assertThat(pacientResult.getValue()).isNull();
+        assertThat(pacientResult.getMessage()).isEqualTo("Full name is required");
     }
 
     @Test
-    void givenInvalidFirstName_whenCreatingPatient_thenPatientIsNotRegistered() {
-        // act & arrange
-        Result<Patient> pacientResult = Patient.registerPatient("Avram Iancu", "Romania", null, null, "", "Doe");
+    void givenOnlyAddressAndFullName_whenRegisteringPatient_thenPatientIsNotRegistered() {
+        // arrange
+        Result<PatientFullName> fullNameResult = PatientFullName.create("John", "Doe");
+        Result<Address> addressResult = Address.create("Avram Iancu", "Romania", null, null);
 
+        // act
+        Result<Patient> pacientResult = Patient.registerPatient(fullNameResult.getValue(), addressResult.getValue(), null);
+        
         // assert
         assertThat(pacientResult.isSuccess()).isFalse();
-        assertThat(pacientResult.getMessage()).isEqualTo("Patient registration has faield, because address or full name is invalid.");
-    }
-
-    @Test
-    void givenValidFirstNameAddress_whenValidatingPatientInformation_thenPatientIsValid() {
-        assertThat(Patient.IsValid("Avram Iancu", "Romania", null, null, "Jhon", "Doe")).isTrue();
-    }
-
-    @Test
-    void givenInvalidFirstName_whenValidatingPatientInformation_thenPatientIsNotValid() {
-        assertThat(Patient.IsValid("Avram Iancu", "Romania", null, null, "", "Doe")).isFalse();
-    }
-
-    @Test
-    void givenInvalidAddress_whenValidatingPatientInformation_thenPatientIsNotValid() {
-        assertThat(Patient.IsValid("Avram Iancu", "", null, null, "Chris", "Doe")).isFalse();
+        assertThat(pacientResult.getValue()).isNull();
+        assertThat(pacientResult.getMessage()).isEqualTo("Contact info is required");
     }
 }
